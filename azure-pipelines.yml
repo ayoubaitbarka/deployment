@@ -1,31 +1,21 @@
-trigger: none # The Docker Compose pipeline will not trigger on its own. It will be triggered by the frontend or backend pipelines (via pipeline triggers).
-
-resources:
-  pipelines:
-    - pipeline: frontendPipeline # Reference the frontend pipeline
-      source: ayoubaitbarka.boutique-front # The name of the frontend pipeline
-      trigger:
-        branches:
-          include:
-            - main # Trigger when the frontend pipeline succeeds
-    - pipeline: backendPipeline # Reference the backend pipeline
-      source: ayoubaitbarka.backendboutique # The name of the backend pipeline
-      trigger:
-        branches:
-          include:
-            - main # Trigger when the backend pipeline succeeds
+trigger:
+  branches:
+    include:
+      - main  # or trigger manually or from another pipeline
 
 pool:
-  name: Default # Use the default agent pool
+  name: Default  # Your self-hosted agent must be in this pool
 
 steps:
-  - checkout: self # Checkout the Docker Compose repo (this repo contains the `docker-compose.yml` file)
+  - checkout: self
+
+  - task: DockerInstaller@0  # Only if Docker isn't preinstalled
+    inputs:
+      dockerVersion: 'latest'
 
   - script: |
-      # Pull the latest backend and frontend images
-      docker pull ayoubaitbarka/boutiquefront:latest
-      docker pull ayoubaitbarka/backendboutique:latest
-      
-      # Run Docker Compose (this will pull the images and start the containers)
+      docker-compose -f docker-compose.yml pull
+      docker-compose -f docker-compose.yml down
       docker-compose -f docker-compose.yml up -d --remove-orphans
-    displayName: 'Deploy with Docker Compose'
+    displayName: "Run Docker Compose"
+
