@@ -1,0 +1,21 @@
+trigger:
+  branches:
+    include:
+      - main  # or trigger manually or from another pipeline
+
+pool:
+  name: Default  # Your self-hosted agent must be in this pool
+
+steps:
+  - checkout: self
+
+  - task: DockerInstaller@0  # Only if Docker isn't preinstalled
+    inputs:
+      dockerVersion: 'latest'
+
+  - script: |
+      docker-compose -f docker-compose.yml pull
+      docker-compose -f docker-compose.yml down
+      docker-compose -f docker-compose.yml up -d --remove-orphans
+    displayName: "Run Docker Compose"
+
