@@ -9,9 +9,7 @@ pool:
 steps:
   - checkout: self
 
-  - task: DockerInstaller@0  # Only if Docker isn't preinstalled
-    inputs:
-      dockerVersion: 'latest'
+ 
 
   - script: |
       docker-compose -f docker-compose.yml pull
