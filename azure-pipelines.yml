@@ -23,8 +23,8 @@ steps:
 
   - script: |
       # Pull the latest backend and frontend images
-      docker pull yourusername/frontend:latest
-      docker pull yourusername/backend:latest
+      docker pull ayoubaitbarka/boutiquefront:latest
+      docker pull ayoubaitbarka/backendboutique:latest
       
       # Run Docker Compose (this will pull the images and start the containers)
       docker-compose -f docker-compose.yml up -d --remove-orphans
